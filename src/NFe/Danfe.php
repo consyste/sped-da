@@ -2042,35 +2042,36 @@ class Danfe extends Common
         //FRETE POR CONTA
         $x += $w1;
         $w2 = $maxW*0.15;
+        $wFrete = $maxW * 0.19;
         $texto = 'FRETE';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
-        $this->pTextBox($x, $y, $w2, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $this->pTextBox($x, $y, $wFrete, $h, $texto, $aFont, 'T', 'L', 1, '');
         $tipoFrete = ! empty($this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue) ?
                 $this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue : '0';
         switch ($tipoFrete) {
             case 0:
-                $texto = "0-Por conta do Rem";
+                $texto = "0-Contratado pelo Remetente";
                 break;
             case 1:
-                $texto = "1-Por conta do Dest";
+                $texto = "1-Contratado pelo Destinatário";
                 break;
             case 2:
-                $texto = "2-Por conta de Terceiros";
+                $texto = "2-Contratado por Terceiros";
                 break;
             case 3:
-                $texto = "3-Próprio por conta do Rem";
+                $texto = "3-Próprio por conta do Remetente";
                 break;
             case 4:
-                $texto = "4-Próprio por conta do Dest";
+                $texto = "4-Próprio por conta do Destinatário";
                 break;
             case 9:
                 $texto = "9-Sem Transporte";
                 break;
         }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
-        $this->pTextBox($x, $y, $w2, $h, $texto, $aFont, 'C', 'C', 1, '');
+        $this->pTextBox($x, $y, $wFrete, $h, $texto, $aFont, 'C', 'C', 1, '');
         //CÓDIGO ANTT
-        $x += $w2;
+        $x += $wFrete;
         $texto = 'CÓDIGO ANTT';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
         $this->pTextBox($x, $y, $w2, $h, $texto, $aFont, 'T', 'L', 1, '');
@@ -2084,9 +2085,10 @@ class Danfe extends Common
         $this->pTextBox($x, $y, $w2, $h, $texto, $aFont, 'B', 'C', 0, '');
         //PLACA DO VEÍC
         $x += $w2;
+        $wPlaca = $maxW * 0.11;
         $texto = 'PLACA DO VEÍCULO';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
-        $this->pTextBox($x, $y, $w2, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $this->pTextBox($x, $y, $wPlaca, $h, $texto, $aFont, 'T', 'L', 1, '');
         if (isset($this->veicTransp)) {
             $texto = ! empty($this->veicTransp->getElementsByTagName("placa")->item(0)->nodeValue) ?
                     $this->veicTransp->getElementsByTagName("placa")->item(0)->nodeValue : '';
@@ -2097,9 +2099,9 @@ class Danfe extends Common
             $texto = '';
         }
         $aFont = array('font'=>$this->fontePadrao, 'size'=>10, 'style'=>'B');
-        $this->pTextBox($x, $y, $w2, $h, $texto, $aFont, 'B', 'C', 0, '');
+        $this->pTextBox($x, $y, $wPlaca, $h, $texto, $aFont, 'B', 'C', 0, '');
         //UF
-        $x += $w2;
+        $x += $wPlaca;
         $w3 = round($maxW*0.04, 0);
         $texto = 'UF';
         $aFont = array('font'=>$this->fontePadrao, 'size'=>6, 'style'=>'');
