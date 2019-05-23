@@ -439,12 +439,12 @@ class Dacte extends Common
                     $x = $xInic;
                     $r = $this->zModalRod($x, $y);
                     break;
-                case '2':
-                    $y += 17.9;
-                    $x = $xInic;
-                    // TODO fmertins 31/10/14: este método não existe...
-                    $r = $this->zModalAereo($x, $y);
-                    break;
+                //case '2':
+                //    $y += 17.9;
+                //    $x = $xInic;
+                // TODO fmertins 31/10/14: este método não existe...
+                //    $r = $this->zModalAereo($x, $y);
+                //    break;
                 case '3':
                     $y += 17.9;
                     $x = $xInic;
@@ -455,12 +455,12 @@ class Dacte extends Common
                     $x = $xInic;
                     $r = $this->zModalFerr($x, $y);
                     break;
-                case '5':
-                    $y += 17.9;
-                    $x = $xInic;
-                    // TODO fmertins 31/10/14: este método não existe...
-                    $r = $this->zModalDutoviario($x, $y);
-                    break;
+                //case '5':
+                //    $y += 17.9;
+                //    $x = $xInic;
+                // TODO fmertins 31/10/14: este método não existe...
+                //    $r = $this->zModalDutoviario($x, $y);
+                //    break;
             }
             if ($this->modal == '1') {
                 if ($this->lota == 1) {
@@ -470,6 +470,8 @@ class Dacte extends Common
                 }
             } elseif ($this->modal == '3') {
                 $y += 24.15;
+            } elseif ($this->modal == '2' || $this->modal == '5') {
+                $y += 15;
             } else {
                 $y += 37;
             }
@@ -2578,19 +2580,21 @@ class Dacte extends Common
      */
     protected function zLocalEntrega()
     {
-        $locEntX = $this->dest->getElementsByTagName('locEnt');
-        if ($locEntX->length > 0) {
-            $locEnt = $locEntX->item(0);
-            $output = "Entrega: " . $output = $this->zFormatCNPJCPF($locEnt);
-            $output .= $this->getTagValue($locEnt, "CPF") . " ";
-            $output .= $this->getTagValue($locEnt, "xNome") . " ";
-            $output .= $this->getTagValue($locEnt, "xLgr") . " ";
-            $output .= $this->getTagValue($locEnt, "nro ") . " ";
-            $output .= $this->getTagValue($locEnt, "xCpl") . " ";
-            $output .= $this->getTagValue($locEnt, "xBairro") . " ";
-            $output .= $this->getTagValue($locEnt, "xMun") . " ";
-            $output .= $this->getTagValue($locEnt, "UF") . " ";
-            return $output;
+        if ($this->dest) {
+            $locEntX = $this->dest->getElementsByTagName('locEnt');
+            if ($locEntX->length > 0) {
+                $locEnt = $locEntX->item(0);
+                $output = "Entrega: " . $output = $this->zFormatCNPJCPF($locEnt);
+                $output .= $this->getTagValue($locEnt, "CPF") . " ";
+                $output .= $this->getTagValue($locEnt, "xNome") . " ";
+                $output .= $this->getTagValue($locEnt, "xLgr") . " ";
+                $output .= $this->getTagValue($locEnt, "nro ") . " ";
+                $output .= $this->getTagValue($locEnt, "xCpl") . " ";
+                $output .= $this->getTagValue($locEnt, "xBairro") . " ";
+                $output .= $this->getTagValue($locEnt, "xMun") . " ";
+                $output .= $this->getTagValue($locEnt, "UF") . " ";
+                return $output;
+            }
         }
         return "";
     } //fim zLocalEntrega
