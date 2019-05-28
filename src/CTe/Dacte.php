@@ -2580,21 +2580,22 @@ class Dacte extends Common
      */
     protected function zLocalEntrega()
     {
-        if ($this->dest) {
-            $locEntX = $this->dest->getElementsByTagName('locEnt');
-            if ($locEntX->length > 0) {
-                $locEnt = $locEntX->item(0);
-                $output = "Entrega: " . $output = $this->zFormatCNPJCPF($locEnt);
-                $output .= $this->getTagValue($locEnt, "CPF") . " ";
-                $output .= $this->getTagValue($locEnt, "xNome") . " ";
-                $output .= $this->getTagValue($locEnt, "xLgr") . " ";
-                $output .= $this->getTagValue($locEnt, "nro ") . " ";
-                $output .= $this->getTagValue($locEnt, "xCpl") . " ";
-                $output .= $this->getTagValue($locEnt, "xBairro") . " ";
-                $output .= $this->getTagValue($locEnt, "xMun") . " ";
-                $output .= $this->getTagValue($locEnt, "UF") . " ";
-                return $output;
-            }
+        if (!$this->dest)
+            return "";
+
+        $locEntX = $this->dest->getElementsByTagName('locEnt');
+        if ($locEntX->length > 0) {
+            $locEnt = $locEntX->item(0);
+            $output = "Entrega: " . $output = $this->zFormatCNPJCPF($locEnt);
+            $output .= $this->getTagValue($locEnt, "CPF") . " ";
+            $output .= $this->getTagValue($locEnt, "xNome") . " ";
+            $output .= $this->getTagValue($locEnt, "xLgr") . " ";
+            $output .= $this->getTagValue($locEnt, "nro ") . " ";
+            $output .= $this->getTagValue($locEnt, "xCpl") . " ";
+            $output .= $this->getTagValue($locEnt, "xBairro") . " ";
+            $output .= $this->getTagValue($locEnt, "xMun") . " ";
+            $output .= $this->getTagValue($locEnt, "UF") . " ";
+            return $output;
         }
         return "";
     } //fim zLocalEntrega
