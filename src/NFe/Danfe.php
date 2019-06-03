@@ -207,7 +207,7 @@ class Danfe extends Common
      * Node
      * @var DOMNode
      */
-    protected $ipiDevol;
+    protected $finNfe;
     /**
      * Node
      * @var DOMNode
@@ -376,7 +376,7 @@ class Danfe extends Common
             $this->cobr       = $this->dom->getElementsByTagName("cobr")->item(0);
             $this->dup        = $this->dom->getElementsByTagName('dup');
             $this->ICMSTot    = $this->dom->getElementsByTagName("ICMSTot")->item(0);
-            $this->ipiDevol   = $this->ipiDevol = $this->getTagValue($this->ICMSTot, "vIPIDevol");
+            $this->finNfe     = $this->getTagValue($this->ide, "finNFe");
             $this->ISSQNtot   = $this->dom->getElementsByTagName("ISSQNtot")->item(0);
             $this->transp     = $this->dom->getElementsByTagName("transp")->item(0);
             $this->transporta = $this->dom->getElementsByTagName("transporta")->item(0);
@@ -622,7 +622,7 @@ class Danfe extends Common
         $hdestinatario = 25;//para destinatario
         $hretirada = isset($this->retirada) ? 25 : 0;//para retirada
         $hentrega = isset($this->entrega) ? 25 : 0;//para entrega
-        $hipiDevolvido = $this->ipiDevol != '' ? 10 : 0;//para vIPIDevol
+        $hipiDevolvido = $this->finNfe == '4' ? 10 : 0;//para vIPIDevol
         $hduplicatas = 12;//para cada grupo de 7 duplicatas
         $himposto = 18;// para imposto
         $htransporte = 25;// para transporte
@@ -718,7 +718,7 @@ class Danfe extends Common
             }
         }
 
-        if ($this->ipiDevol != '') {
+        if ($this->finNfe == '4') {
             //coloca os dados de IPI Devolvido
             $y = $this->pIpiDevolvidoDANFE($x, $y + 1);
         }
@@ -938,9 +938,9 @@ class Danfe extends Common
     protected function pIpiDevolvidoDANFE($x = 0, $y = 0)
     {
         $valorImposto = '0,00';
-        $the_value = $this->ipiDevol;
-        if ($this->ipiDevol != '') {
-            $valorImposto = number_format($the_value, 2, ",", ".");
+        $ipiDevol = $this->getTagValue($this->ICMSTot, "vIPIDevol");
+        if ($ipiDevol != '') {
+            $valorImposto = number_format($ipiDevol, 2, ",", ".");
         }
         //#####################################################################
         //IPI DEVOLVIDO
