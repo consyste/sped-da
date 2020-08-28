@@ -126,6 +126,11 @@ class Danfe extends DaCommon
      * Node
      * @var \DOMNode
      */
+    protected $finNfe;
+    /**
+     * Node
+     * @var \DOMNode
+     */
     protected $emit;
     /**
      * Node
@@ -472,6 +477,7 @@ class Danfe extends DaCommon
         //altura disponivel para os campos da DANFE
         $hcabecalho = 47;//para cabeçalho
         $hdestinatario = 25;//para destinatario
+        $hipiDevolvido = $this->finNfe == '4' ? 10 : 0;//para vIPIDevol
         $hduplicatas = 12;//para cada grupo de 7 duplicatas
         if (isset($this->entrega)) {
             $hlocalentrega = 25;
@@ -506,7 +512,7 @@ class Danfe extends DaCommon
             //$hdestinatario + ($linhasDup * $hduplicatas) + $himposto + $htransporte +
             $hdestinatario + $hlocalentrega + $hlocalretirada +
             ($linhasDup * $hduplicatas) + $himposto + $htransporte +
-            ($linhaISSQN * $hissqn) + $this->hdadosadic + $hfooter + $hCabecItens +
+            ($linhaISSQN * $hissqn) + $this->hdadosadic + $hfooter + $hCabecItens + $hipiDevolvido +
             $this->sizeExtraTextoFatura());*/
         
         if ($this->orientacao == 'P') {
@@ -592,6 +598,12 @@ class Danfe extends DaCommon
                 $y = $this->pagamento($x, $y+1);
             }
         }
+
+        if ($this->finNfe == '4') {
+            //coloca os dados de IPI Devolvido
+            $y = $this->pIpiDevolvidoDANFE($x, $y + 1);
+        }
+
         //coloca os dados dos impostos e totais da NFe
         $y = $this->imposto($x, $y+1);
         //coloca os dados do trasnporte
@@ -645,6 +657,45 @@ class Danfe extends DaCommon
             }
         }
     }
+
+    /**
+     * pIpiDevolvidoDANFE
+     * Apresenta o valor total de IPI Devolvido
+     *
+     * @param  number $x Posição horizontal canto esquerdo
+     * @param  number $y Posição vertical canto superior
+     * @return number Posição vertical final
+     */
+    protected function pIpiDevolvidoDANFE($x = 0, $y = 0)
+    {
+        $valorImposto = '0,00';
+        $ipiDevol = $this->getTagValue($this->ICMSTot, "vIPIDevol");
+        if ($ipiDevol != '') {
+            $valorImposto = number_format($ipiDevol, 2, ",", ".");
+        }
+        //#####################################################################
+        //IPI DEVOLVIDO
+        if ($this->orientacao == 'P') {
+            $maxW = $this->wPrint;
+        } else {
+            $maxW = $this->wPrint - $this->wCanhoto;
+        }
+        $w = $maxW;
+        $h = 7;
+        $texto = 'IPI DEVOLVIDO';
+        $aFont = array('font' => $this->fontePadrao, 'size' => 7, 'style' => 'B');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        //V. TOTAL IPI DEVOLVIDO
+        $w = $maxW * 0.13;
+        $y += 3;
+        $texto = 'V. TOTAL IPI DEVOLVIDO';
+        $aFont = array('font' => $this->fontePadrao, 'size' => 6, 'style' => '');
+        $this->pTextBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => 'B');
+        $this->pTextBox($x, $y, $w, $h, $valorImposto, $aFont, 'B', 'R', 0, '');
+
+        return ($y + $h);
+    } //fim da função pIpiDevolvidoDANFE
 
     /**
      * anfavea
@@ -3610,6 +3661,7 @@ class Danfe extends DaCommon
             $this->dup = $this->dom->getElementsByTagName('dup');
             $this->ICMSTot = $this->dom->getElementsByTagName("ICMSTot")->item(0);
             $this->ISSQNtot = $this->dom->getElementsByTagName("ISSQNtot")->item(0);
+            $this->finNfe = $this->getTagValue($this->ide, "finNFe");
             $this->transp = $this->dom->getElementsByTagName("transp")->item(0);
             $this->transporta = $this->dom->getElementsByTagName("transporta")->item(0);
             $this->veicTransp = $this->dom->getElementsByTagName("veicTransp")->item(0);
