@@ -583,7 +583,7 @@ class Danfe extends DaCommon
             + $this->sizeExtraTextoFatura();
 
         //alturas disponiveis para os dados
-        $hDispo1 = $this->hPrint - $hOCUPADA;
+        $hDispo1 = $this->hPrint - 10 - $hOCUPADA;
         /*($hcabecalho +
         //$hdestinatario + ($linhasDup * $hduplicatas) + $himposto + $htransporte +
         $hdestinatario + $hlocalentrega + $hlocalretirada +
