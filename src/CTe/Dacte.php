@@ -379,12 +379,12 @@ class Dacte extends DaCommon
                     $x = $xInic;
                     $r = $this->modalFerr($x, $y);
                     break;
-                case '5':
-                    $y += 17.9;
-                    $x = $xInic;
-                    // TODO fmertins 31/10/14: este método não existe...
-                    $r = $this->modalDutoviario($x, $y);
-                    break;
+                // case '5':
+                //     $y += 17.9;
+                //     $x = $xInic;
+                //     // TODO fmertins 31/10/14: este método não existe...
+                //     $r = $this->modalDutoviario($x, $y);
+                //     break;
                 case '6':
                     $x = $xInic;
                     $r = $this->modalMultimodal($x, $y);
@@ -402,6 +402,8 @@ class Dacte extends DaCommon
             } elseif ($this->modal == '3') {
                 $y += 42.05;
                 $y += 42.05;
+            } elseif ($this->modal == '5') {
+                $y += 15;
             } elseif ($this->modal == '6') {
                 $y += 42.05;
             } else {
@@ -2864,6 +2866,7 @@ class Dacte extends DaCommon
         $textoObs = explode("Motorista:", $texto);
         $textoObs[1] = isset($textoObs[1]) ? "Motorista: " . $textoObs[1] : '';
         $texto .= $this->getTagValue($this->imp, "infAdFisco", "\r\n");
+        $texto .= $this->zLocalEntrega();
         $aFont = array(
             'font' => $this->fontePadrao,
             'size' => 7.5,
@@ -2871,6 +2874,33 @@ class Dacte extends DaCommon
         $this->pdf->textBox($x, $y, $w, $h, $textoObs[0], $aFont, 'T', 'L', 0, '', false);
         $this->pdf->textBox($x, $y + 11.5, $w, $h, $textoObs[1], $aFont, 'T', 'L', 0, '', false);
     }
+
+    /**
+    * zLocalEntrega
+    *
+    * @return string
+    */
+    protected function zLocalEntrega()
+    {
+        if (!$this->dest)
+            return "";
+
+        $locEntX = $this->dest->getElementsByTagName('locEnt');
+        if ($locEntX->length > 0) {
+            $locEnt = $locEntX->item(0);
+            $output = "Entrega: " . $output = $this->zFormatCNPJCPF($locEnt);
+            $output .= $this->getTagValue($locEnt, "CPF") . " ";
+            $output .= $this->getTagValue($locEnt, "xNome") . " ";
+            $output .= $this->getTagValue($locEnt, "xLgr") . " ";
+            $output .= $this->getTagValue($locEnt, "nro ") . " ";
+            $output .= $this->getTagValue($locEnt, "xCpl") . " ";
+            $output .= $this->getTagValue($locEnt, "xBairro") . " ";
+            $output .= $this->getTagValue($locEnt, "xMun") . " ";
+            $output .= $this->getTagValue($locEnt, "UF") . " ";
+            return $output;
+        }
+        return "";
+     } //fim zLocalEntrega
 
     /**
      * modalRod
