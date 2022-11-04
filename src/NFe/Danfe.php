@@ -163,6 +163,11 @@ class Danfe extends DaCommon
      * @var \DOMNode
      */
     protected $retirada;
+     /**
+     * Node
+     * @var DOMNode
+     */
+    protected $finNfe;
     /**
      * Node
      *
@@ -562,6 +567,8 @@ class Danfe extends DaCommon
         $hfooter     = 5; // para rodape
         $hCabecItens = 4; //cabeçalho dos itens
 
+        $hIpiDevolvido = $this->finNfe == '4' ? 10 : 0;//para vIPIDevol
+
         $hOCUPADA    = $hcabecalho
             + $hdestinatario
             + $hlocalentrega
@@ -572,6 +579,7 @@ class Danfe extends DaCommon
             + $this->hdadosadic
             + $hfooter
             + $hCabecItens
+            + $hIpiDevolvido
             + $this->sizeExtraTextoFatura();
 
         //alturas disponiveis para os dados
@@ -658,6 +666,11 @@ class Danfe extends DaCommon
             $y = $this->localEntregaDANFE($x, $y + 1);
         }
 
+        if ($this->finNfe == '4') {
+            //coloca os dados de IPI Devolvido
+            $y = $this->pIpiDevolvidoDANFE($x, $y + 1);
+        }
+
         //Verifica as formas de pagamento da nota fiscal
         $formaPag = [];
         if (isset($this->detPag) && $this->detPag->length > 0) {
@@ -734,6 +747,45 @@ class Danfe extends DaCommon
             }
         }
     }
+
+    /**
+     * pIpiDevolvidoDANFE
+     * Apresenta o valor total de IPI Devolvido
+     *
+     * @param  number $x Posição horizontal canto esquerdo
+     * @param  number $y Posição vertical canto superior
+     * @return number Posição vertical final
+     */
+    protected function pIpiDevolvidoDANFE($x = 0, $y = 0)
+    {
+        $valorImposto = '0,00';
+        $ipiDevol = $this->getTagValue($this->ICMSTot, "vIPIDevol");
+        if ($ipiDevol != '') {
+            $valorImposto = number_format($ipiDevol, 2, ",", ".");
+        }
+        //#####################################################################
+        //IPI DEVOLVIDO
+        if ($this->orientacao == 'P') {
+            $maxW = $this->wPrint;
+        } else {
+            $maxW = $this->wPrint - $this->wCanhoto;
+        }
+        $w = $maxW;
+        $h = 7;
+        $texto = 'IPI DEVOLVIDO';
+        $aFont = array('font' => $this->fontePadrao, 'size' => 7, 'style' => 'B');
+        $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 0, '');
+        //V. TOTAL IPI DEVOLVIDO
+        $w = $maxW * 0.13;
+        $y += 3;
+        $texto = 'V. TOTAL IPI DEVOLVIDO';
+        $aFont = array('font' => $this->fontePadrao, 'size' => 6, 'style' => '');
+        $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $aFont = array('font' => $this->fontePadrao, 'size' => 10, 'style' => 'B');
+        $this->pdf->textBox($x, $y, $w, $h, $valorImposto, $aFont, 'B', 'R', 0, '');
+
+        return ($y + $h);
+    } //fim da função pIpiDevolvidoDANFE
 
     /**
      * anfavea
@@ -2336,36 +2388,37 @@ class Danfe extends DaCommon
         //FRETE POR CONTA
         $x     += $w1;
         $w2    = $maxW * 0.15;
+        $wFrete = $maxW * 0.19;
         $texto = 'FRETE';
         $aFont = ['font' => $this->fontePadrao, 'size' => 6, 'style' => ''];
-        $this->pdf->textBox($x, $y, $w2, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $this->pdf->textBox($x, $y, $wFrete, $h, $texto, $aFont, 'T', 'L', 1, '');
         $tipoFrete = !empty($this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue)
             ? $this->transp->getElementsByTagName("modFrete")->item(0)->nodeValue
             : '0';
         switch ($tipoFrete) {
             case 0:
-                $texto = "0-Por conta do Emit";
+                $texto = "0-Contratado pelo Remetente";
                 break;
             case 1:
-                $texto = "1-Por conta do Dest";
+                $texto = "1-Contratado pelo Destinatário";
                 break;
             case 2:
-                $texto = "2-Por conta de Terceiros";
+                $texto = "2-Contratado por Terceiros";
                 break;
             case 3:
-                $texto = "3-Próprio por conta do Rem";
+                $texto = "3-Próprio por conta do Remetente";
                 break;
             case 4:
-                $texto = "4-Próprio por conta do Dest";
+                $texto = "4-Próprio por conta do Destinatário";
                 break;
             case 9:
                 $texto = "9-Sem Transporte";
                 break;
         }
         $aFont = ['font' => $this->fontePadrao, 'size' => 10, 'style' => 'B'];
-        $this->pdf->textBox($x, $y, $w2, $h, $texto, $aFont, 'C', 'C', 1, '');
+        $this->pdf->textBox($x, $y, $wFrete, $h, $texto, $aFont, 'C', 'C', 1, '');
         //CÓDIGO ANTT
-        $x     += $w2;
+        $x     += $wFrete;
         $texto = 'CÓDIGO ANTT';
         $aFont = ['font' => $this->fontePadrao, 'size' => 6, 'style' => ''];
         $this->pdf->textBox($x, $y, $w2, $h, $texto, $aFont, 'T', 'L', 1, '');
@@ -2380,9 +2433,10 @@ class Danfe extends DaCommon
         $this->pdf->textBox($x, $y, $w2, $h, $texto, $aFont, 'B', 'C', 0, '');
         //PLACA DO VEÍC
         $x     += $w2;
+        $wPlaca = $maxW * 0.11;
         $texto = 'PLACA DO VEÍCULO';
         $aFont = ['font' => $this->fontePadrao, 'size' => 6, 'style' => ''];
-        $this->pdf->textBox($x, $y, $w2, $h, $texto, $aFont, 'T', 'L', 1, '');
+        $this->pdf->textBox($x, $y, $wPlaca, $h, $texto, $aFont, 'T', 'L', 1, '');
         if (isset($this->veicTransp)) {
             $texto = !empty($this->veicTransp->getElementsByTagName("placa")->item(0)->nodeValue)
                 ? $this->veicTransp->getElementsByTagName("placa")->item(0)->nodeValue
@@ -2397,7 +2451,7 @@ class Danfe extends DaCommon
         $aFont = ['font' => $this->fontePadrao, 'size' => 10, 'style' => 'B'];
         $this->pdf->textBox($x, $y, $w2, $h, $texto, $aFont, 'B', 'C', 0, '');
         //UF
-        $x     += $w2;
+        $x     += $wPlaca;
         $w3    = round($maxW * 0.04, 0);
         $texto = 'UF';
         $aFont = ['font' => $this->fontePadrao, 'size' => 6, 'style' => ''];
@@ -4010,6 +4064,7 @@ class Danfe extends DaCommon
             $this->cobr       = $this->dom->getElementsByTagName("cobr")->item(0);
             $this->dup        = $this->dom->getElementsByTagName('dup');
             $this->ICMSTot    = $this->dom->getElementsByTagName("ICMSTot")->item(0);
+            $this->finNfe     = $this->getTagValue($this->ide, "finNFe");
             $this->ISSQNtot   = $this->dom->getElementsByTagName("ISSQNtot")->item(0);
             $this->transp     = $this->dom->getElementsByTagName("transp")->item(0);
             $this->transporta = $this->dom->getElementsByTagName("transporta")->item(0);
