@@ -88,6 +88,11 @@ class Damdfe extends DaCommon
     protected $quantidadeChavesLayout = 20;
 
     /**
+     * Define se vai ou não exibir as chaves de CT-e, NF-e e MDF-e vinculadas a essa MDF-e
+     */
+    protected bool $exibirDocumentosVinculados = true;
+
+    /**
      * __construct
      *
      * @param string $xml Arquivo XML da MDFe
@@ -168,8 +173,10 @@ class Damdfe extends DaCommon
             if (!empty($this->rodo)) {
                 $this->RNTRC = "";
                 $infANTT = $this->rodo->getElementsByTagName("infANTT")->item(0);
-                if (!empty($infANTT) && isset($infANTT->getElementsByTagName("RNTRC")->item(0)->nodeValue)) {
-                    $this->RNTRC = $infANTT->getElementsByTagName("RNTRC")->item(0)->nodeValue;
+                if(isset($infANTT)){
+                    if (isset($infANTT->getElementsByTagName("RNTRC")->item(0)->nodeValue)) {
+                        $this->RNTRC = $infANTT->getElementsByTagName("RNTRC")->item(0)->nodeValue;
+                    }
                 }
             }
             $this->ciot = "";
@@ -273,7 +280,7 @@ class Damdfe extends DaCommon
         //coloca os dados da MDFe
         $this->footerMDFe($x, $y);
 
-        if ($this->flagDocs) {
+        if ($this->flagDocs && $this->exibirDocumentosVinculados) {
             $this->addPage();
         }
     }
@@ -1038,15 +1045,18 @@ class Damdfe extends DaCommon
                 $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
                 $this->pdf->textBox($x1, $y, $x2 - 1, 8, $texto, $aFont, 'T', 'L', 0, '', false);
             }
-            $x1 = round($maxW / 2, 0) + 7;
-            $x2 = ($maxW / 6);
             $y = $yCabecalhoLinha;
-            $this->quantidadeChavesLayout = 21;
-            if ($this->orientacao == 'L') {
-                $x1 = 225;
-                $y = $yold - 5;
-                $this->quantidadeChavesLayout = 17;
-            }
+        }
+        $x1 = round($maxW / 2, 0) + 7;
+        $x2 = ($maxW / 6);
+        $this->quantidadeChavesLayout = 21;
+        if ($this->orientacao == 'L') {
+            $x1 = 225;
+            $y = $yold - 5;
+            $this->quantidadeChavesLayout = 17;
+        }
+
+        if ($this->exibirDocumentosVinculados) {
             $texto = 'Chaves de acesso';
             $aFont = array('font' => $this->fontePadrao, 'size' => 8, 'style' => '');
             $this->pdf->textBox($x1, $y, $x2, 8, $texto, $aFont, 'T', 'L', 0, '', false);
@@ -1100,11 +1110,9 @@ class Damdfe extends DaCommon
                 }
             }
         }
-
         if ($this->aereo) {
             $altura = $y + 4;
         }
-
         if ($this->aquav) {
             $x1 = $x;
             $x2 = $maxW;
@@ -1416,5 +1424,10 @@ class Damdfe extends DaCommon
             $texto = "Powered by NFePHP®";
         }
         $this->pdf->textBox($x, $y, $w, 8, $texto, $aFont, 'T', 'R', false, '');
+    }
+
+    public function setExibirDocumentosVinculados(bool $exibirDocumentosVinculados): void
+    {
+        $this->exibirDocumentosVinculados = $exibirDocumentosVinculados;
     }
 }
