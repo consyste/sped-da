@@ -1272,35 +1272,36 @@ class DacteOS extends DaCommon
         $x = $oldX;
         $y = $y + 4;
 
-        $texto = !empty($this->infTribFed->getElementsByTagName("vPIS")->item(0)->nodeValue) ?
-            number_format($this->getTagValue($this->infTribFed, "vPIS"), 2, ",", ".") : '0,00';
-        $aFont = $this->formatNegrito;
-        $this->pdf->textBox($x, $y, $w * 0.26, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $x += $w * 0.26;
+        if (isset($this->infTribFed)) {
+            $texto = !empty($this->infTribFed->getElementsByTagName("vPIS")->item(0)->nodeValue) ?
+                number_format($this->getTagValue($this->infTribFed, "vPIS"), 2, ",", ".") : '0,00';
+            $aFont = $this->formatNegrito;
+            $this->pdf->textBox($x, $y, $w * 0.26, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $x += $w * 0.26;
 
-        $texto = !empty($this->infTribFed->getElementsByTagName("vCOFINS")->item(0)->nodeValue) ?
-            number_format($this->getTagValue($this->infTribFed, "vCOFINS"), 2, ",", ".") : '0,00';
-        $aFont = $this->formatNegrito;
-        $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $x += $w * $wCol02;
+            $texto = !empty($this->infTribFed->getElementsByTagName("vCOFINS")->item(0)->nodeValue) ?
+                number_format($this->getTagValue($this->infTribFed, "vCOFINS"), 2, ",", ".") : '0,00';
+            $aFont = $this->formatNegrito;
+            $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $x += $w * $wCol02;
 
-        $texto = !empty($this->infTribFed->getElementsByTagName("vIR")->item(0)->nodeValue) ?
-            number_format($this->getTagValue($this->infTribFed, "vIR"), 2, ",", ".") : '0,00';
-        $aFont = $this->formatNegrito;
-        $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $x += $w * $wCol02;
+            $texto = !empty($this->infTribFed->getElementsByTagName("vIR")->item(0)->nodeValue) ?
+                number_format($this->getTagValue($this->infTribFed, "vIR"), 2, ",", ".") : '0,00';
+            $aFont = $this->formatNegrito;
+            $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $x += $w * $wCol02;
 
-        $texto = !empty($this->infTribFed->getElementsByTagName("vINSS")->item(0)->nodeValue) ?
-            number_format($this->getTagValue($this->infTribFed, "vINSS"), 2, ",", ".") : '0,00';
-        $aFont = $this->formatNegrito;
-        $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
-        $x += $w * $wCol02;
+            $texto = !empty($this->infTribFed->getElementsByTagName("vINSS")->item(0)->nodeValue) ?
+                number_format($this->getTagValue($this->infTribFed, "vINSS"), 2, ",", ".") : '0,00';
+            $aFont = $this->formatNegrito;
+            $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $x += $w * $wCol02;
 
-        $texto = !empty($this->infTribFed->getElementsByTagName("vCSLL")->item(0)->nodeValue) ?
-            number_format($this->getTagValue($this->infTribFed, "vCSLL"), 2, ",", ".").'%' : '0,00';
-        $aFont = $this->formatNegrito;
-        $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
-
+            $texto = !empty($this->infTribFed->getElementsByTagName("vCSLL")->item(0)->nodeValue) ?
+                number_format($this->getTagValue($this->infTribFed, "vCSLL"), 2, ",", ".").'%' : '0,00';
+            $aFont = $this->formatNegrito;
+            $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
+        }
     } //fim da função compValorDACTE
 
     /**
