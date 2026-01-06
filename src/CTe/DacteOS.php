@@ -1141,7 +1141,7 @@ class DacteOS extends DaCommon
         }
         $w = $maxW;
         $h = 13;
-        $texto = 'INFORMAÇÕES RELATIVAS AO IMPOSTO';
+        $texto = 'INFORMAÇÕES RELATIVAS AO IMPOSTO 22';
         $aFont = $this->formatPadrao;
         $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
 
@@ -1230,49 +1230,49 @@ class DacteOS extends DaCommon
         $aFont = $this->formatNegrito;
         $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
 
-        $y += 5.5;
-        $x = $oldX;
+       if ($this->infTribFed) {
+            $y += 5.5;
+            $x = $oldX;
 
-        $h = 13;
-        $texto = 'INFORMAÇÕES RELATIVAS AO IMPOSTOS FEDERAIS';
-        $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
+            $h = 13;
+            $texto = 'INFORMAÇÕES RELATIVAS AO IMPOSTOS FEDERAIS';
+            $aFont = $this->formatPadrao;
+            $this->pdf->textBox($x, $y, $w, $h, $texto, $aFont, 'T', 'C', 1, '');
 
-        $y += 3.4;
-        $this->pdf->line($x, $y, $w + 1, $y);
-        $texto = 'VALOR PIS';
-        $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.26, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $y += 3.4;
+            $this->pdf->line($x, $y, $w + 1, $y);
+            $texto = 'VALOR PIS';
+            $aFont = $this->formatPadrao;
+            $this->pdf->textBox($x, $y, $w * 0.26, $h, $texto, $aFont, 'T', 'L', 0, '');
 
-        $x += $w * 0.26;
-        $this->pdf->line($x, $y, $x, $y + 9.5);
-        $texto = 'VALOR COFINS';
-        $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $x += $w * 0.26;
+            $this->pdf->line($x, $y, $x, $y + 9.5);
+            $texto = 'VALOR COFINS';
+            $aFont = $this->formatPadrao;
+            $this->pdf->textBox($x, $y, $w * 0.14, $h, $texto, $aFont, 'T', 'L', 0, '');
 
-        $wCol02=0.18;
-        $x += $w * $wCol02;
-        $this->pdf->line($x, $y, $x, $y + 9.5);
-        $texto = 'VALOR IR';
-        $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $wCol02=0.18;
+            $x += $w * $wCol02;
+            $this->pdf->line($x, $y, $x, $y + 9.5);
+            $texto = 'VALOR IR';
+            $aFont = $this->formatPadrao;
+            $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
 
-        $x += $w * $wCol02;
-        $this->pdf->line($x, $y, $x, $y + 9.5);
-        $texto = 'VALOR INSS';
-        $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $x += $w * $wCol02;
+            $this->pdf->line($x, $y, $x, $y + 9.5);
+            $texto = 'VALOR INSS';
+            $aFont = $this->formatPadrao;
+            $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
 
-        $x += $w * $wCol02;
-        $this->pdf->line($x, $y, $x, $y + 9.5);
-        $texto = 'VALOR CSLL';
-        $aFont = $this->formatPadrao;
-        $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
+            $x += $w * $wCol02;
+            $this->pdf->line($x, $y, $x, $y + 9.5);
+            $texto = 'VALOR CSLL';
+            $aFont = $this->formatPadrao;
+            $this->pdf->textBox($x, $y, $w * $wCol02, $h, $texto, $aFont, 'T', 'L', 0, '');
 
-        $x = $oldX;
-        $y = $y + 4;
+            $x = $oldX;
+            $y = $y + 4;
 
-        if (isset($this->infTribFed)) {
             $texto = !empty($this->infTribFed->getElementsByTagName("vPIS")->item(0)->nodeValue) ?
                 number_format($this->getTagValue($this->infTribFed, "vPIS"), 2, ",", ".") : '0,00';
             $aFont = $this->formatNegrito;
